@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
-import {
+import
+{
   StyleSheet,
   Text,
   View,
@@ -22,39 +23,77 @@ import { AntDesign } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-const updateApi = async (pin, value, success_message) => {
+const updateApi = async (pin, value, success_message) =>
+{
   const api_token = API_TOKEN;
   let update_url = "https://blynk.cloud/external/api/update?token=" + api_token;
   update_url = update_url + "&pin=" + pin + "&value=" + value;
 
   await fetch(update_url)
-    .then((response) => {
-      if (!response.ok) {
+    .then((response) =>
+    {
+      if (!response.ok)
+      {
         console.log("POST ERROR: " + JSON.stringify(response));
         throw new Error("HTTP error " + response.status);
       }
       console.log("POST RESPONSE: " + JSON.stringify(response));
 
-      if (success_message != "") {
+      if (success_message != "")
+      {
         Toast.show(success_message, {});
       }
     })
-    .catch((error) => {
+    .catch((error) =>
+    {
       Toast.show("Error: " + error.message, {});
     });
 };
 
-const updateMultipleApi = async (pins, values, success_message) => {
+const updateSprayApi = async (pin, value, success_message) =>
+{
   const api_token = API_TOKEN;
   let update_url = "https://blynk.cloud/external/api/update?token=" + api_token;
+  update_url = update_url + "&pin=" + pin + "&value=" + value;
 
-  for (let i = 0; i < pins.length; i++) {
+  await fetch(update_url)
+    .then((response) =>
+    {
+      if (!response.ok)
+      {
+        console.log("POST ERROR: " + JSON.stringify(response));
+        throw new Error("HTTP error " + response.status);
+      }
+      console.log("POST RESPONSE: " + JSON.stringify(response));
+
+      if (success_message != "")
+      {
+        Toast.show(success_message, {});
+      }
+    })
+    .catch((error) =>
+    {
+      Toast.show("Error: " + error.message, {});
+    });
+  await new Promise((resolve) => setTimeout(resolve, 10000));
+  updateApi("v4", "1", "Completed Spraying");
+};
+
+const updateMultipleApi = async (pins, values, success_message) =>
+{
+  const api_token = "-yAs1LjuRZZDx2bum0PCyIzRFshfbopy";
+  let update_url = "https://blynk.cloud/external/api/update?token=" + api_token;
+
+  for (let i = 0; i < pins.length; i++)
+  {
     update_url = update_url + "&" + pins[i] + "=" + values[i];
   }
 
   await fetch(update_url)
-    .then((response) => {
-      if (!response.ok) {
+    .then((response) =>
+    {
+      if (!response.ok)
+      {
         console.log("POST ERROR: " + JSON.stringify(response));
         throw new Error("HTTP error " + response.status);
       }
@@ -62,19 +101,23 @@ const updateMultipleApi = async (pins, values, success_message) => {
 
       Toast.show(success_message, {});
     })
-    .catch((error) => {
+    .catch((error) =>
+    {
       Toast.show("Error: " + error.message, {});
     });
 };
 
-export default function App() {
+export default function App()
+{
   const [transform, setTransform] = React.useState({ rotate: "0deg" });
   const [cameraFeed, setCameraFeed] = React.useState(false);
   const [diseased, setDiseased] = React.useState(null);
   const [showBanner, setShowBanner] = React.useState(null);
 
-  const updatePin = (direction) => {
-    switch (direction) {
+  const updatePin = (direction) =>
+  {
+    switch (direction)
+    {
       case "left":
         pin = "v0";
         value = "1";
@@ -103,40 +146,48 @@ export default function App() {
     updateApi(pin, value, "Moved " + direction + " successfully");
   };
 
-  const updateDiseased = async () => {
-    // sleep for 5 seconds
+  const updateDiseased = async () =>
+  {
+    // sleep for 10 seconds
 
-    await new Promise((resolve) => setTimeout(resolve, 5000));
+    await new Promise((resolve) => setTimeout(resolve, 10000));
 
     const status = await fetch(
-      "https://blynk.cloud/external/api/get?token=" + API_TOKEN + "&v9"
+      "https://blynk.cloud/external/api/get?token=" + "-yAs1LjuRZZDx2bum0PCyIzRFshfbopy" + "&v9"
     )
-      .then((response) => {
-        if (!response.ok) {
+      .then((response) =>
+      {
+        if (!response.ok)
+        {
           console.log("GET ERROR: " + JSON.stringify(response));
           throw new Error("HTTP error " + response.status);
         }
         console.log("GET RESPONSE: " + JSON.stringify(response));
         return response.json();
       })
-      .catch((error) => {
+      .catch((error) =>
+      {
         console.log("GET ERROR: " + error.message);
         Toast.show("Error: " + error.message, {});
       });
 
     console.log("PLANT STATUS: " + status);
 
-    if (status == 0) {
+    if (status == 0)
+    {
       setDiseased(true);
-    } else {
+    } else
+    {
       setDiseased(false);
     }
 
     // show banner for 5 seconds
     setShowBanner(true);
-    setTimeout(() => {
+    setTimeout(() =>
+    {
       setShowBanner(false);
-    }, 5000);
+    }, 10000);
+    updateApi("v8", "0", "Predicted successfully");
   };
 
   return (
@@ -198,7 +249,8 @@ export default function App() {
             }}
           >
             <TouchableOpacity
-              onPress={() => {
+              onPress={() =>
+              {
                 updateApi("v5", "0", "");
                 updateApi("v6", "0", "");
               }}
@@ -210,7 +262,7 @@ export default function App() {
             style={styles.webView}
             originWhitelist={["*"]}
             source={{
-              uri: "http://192.168.1.38:8000",
+              uri: "http://192.168.43.18:8000"
             }}
           />
 
@@ -228,7 +280,8 @@ export default function App() {
           >
             {cameraFeed ? (
               <TouchableOpacity
-                onPress={() => {
+                onPress={() =>
+                {
                   setCameraFeed(false);
                   updateApi("v7", "0", "Feed stopped");
                 }}
@@ -237,7 +290,8 @@ export default function App() {
               </TouchableOpacity>
             ) : (
               <TouchableOpacity
-                onPress={() => {
+                onPress={() =>
+                {
                   setCameraFeed(true);
                   updateApi("v7", "1", "Feed started");
                 }}
@@ -284,18 +338,31 @@ export default function App() {
           >
             <MaterialIcons name="keyboard-arrow-right" size={30} color="#fff" />
           </TouchableOpacity>
+        </View>        
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => 
+              {
+                updateApi("v0", "0", "");
+                updateApi("v1", "0", "");
+                updateApi("v2", "0", "");
+              }}
+          >
+            <Entypo name="controller-stop" size={30} color="black" />
+          </TouchableOpacity>
         </View>
-        <Spacer height={32} />
         <View style={styles.buttonContainer}>
           <TouchableOpacity
             style={styles.rectButton}
-            onPress={() => updateApi("v4", "1", "Sprayed successfully")}
+            onPress={() => updateSprayApi("v4", "0", "Sprayed successfully")}
           >
             <FontAwesome5 name="spray-can" size={30} color="white" />
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.rectButton}
-            onPress={() => {
+            onPress={() =>
+            {
               setCameraFeed(false);
               updateApi("v8", "1", "Captured successfully");
               updateDiseased();
